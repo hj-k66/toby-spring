@@ -47,7 +47,10 @@ public class UserDao {
         }
     }
     public void deleteAll(){
-        jdbcContextWithStatementStrategy(new DeleteAllStrategy());
+        jdbcContextWithStatementStrategy(connection -> {
+            PreparedStatement pstmt = connection.prepareStatement("DELETE FROM users;");
+            return pstmt;
+        };
     }
 
     public int getCount(){
@@ -96,7 +99,13 @@ public class UserDao {
     }
 
     public void add(User user) {
-        jdbcContextWithStatementStrategy(new AddStrategy(user));
+        jdbcContextWithStatementStrategy(connection -> {
+            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO users(id, name, password) VALUES(?,?,?);");
+            pstmt.setString(1, user.getId());
+            pstmt.setString(2, user.getName());
+            pstmt.setString(3, user.getPassword());
+            return pstmt;
+        });
     }
 
     public User findById(String id) {
