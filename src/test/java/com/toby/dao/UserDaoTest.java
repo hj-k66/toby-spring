@@ -1,11 +1,13 @@
 package com.toby.dao;
 
 import com.toby.domain.User;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -40,7 +42,6 @@ class UserDaoTest {
     void deleteAll(){
         //Given
         User user = new User("0","김희정","1234");
-        UserDao userDao = context.getBean("awsUserDao",UserDao.class);
         userDao.add(user);
         //When
         userDao.deleteAll();
@@ -54,7 +55,6 @@ class UserDaoTest {
         User user1 = new User("1","김희정","1234");
         User user2 = new User("2","희정김","4321");
         User user3 = new User("3","정희김","asdf");
-        UserDao userDao = context.getBean("awsUserDao",UserDao.class);
 
         //When
         userDao.add(user1);
@@ -62,6 +62,18 @@ class UserDaoTest {
         userDao.add(user3);
         //Then
         assertThat(userDao.getCount()).isEqualTo(3);
+    }
+
+    @Test
+    void findByIdException(){
+        //Given
+        userDao.deleteAll();
+        //When
+        assertThat(userDao.getCount()).isEqualTo(0);
+        //Then
+        Assertions.assertThrows(EmptyResultDataAccessException.class,()->{
+            userDao.findById("100");
+        });
     }
 
 }
