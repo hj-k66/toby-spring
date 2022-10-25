@@ -12,6 +12,47 @@ public class UserDao {
     public UserDao(ConnectionMaker connectionMaker) {
         this.connectionMaker = connectionMaker;
     }
+    public void deleteAll(){
+        try {
+
+            Connection c = connectionMaker.makeConnection();
+
+            // Query문 작성
+            PreparedStatement pstmt = c.prepareStatement("DELETE FROM users;");
+
+            // Query문 실행
+            pstmt.executeUpdate();
+
+            pstmt.close();
+            c.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public int getCount(){
+        try {
+
+            Connection c = connectionMaker.makeConnection();
+
+            // Query문 작성
+            PreparedStatement pstmt = c.prepareStatement("SELECT count(*) FROM users;");
+
+            // Query문 실행
+            ResultSet rs = pstmt.executeQuery();
+            rs.next();
+            int count = rs.getInt(1);
+
+            rs.close();
+            pstmt.close();
+            c.close();
+
+            return count;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void add(User user) {
         try {
