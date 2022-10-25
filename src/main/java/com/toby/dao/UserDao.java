@@ -13,7 +13,8 @@ public class UserDao {
     public UserDao(ConnectionMaker connectionMaker) {
         this.connectionMaker = connectionMaker;
     }
-    public void deleteAll(){
+
+    public void jdbcContextWithStatementStrategy(StatementStrategy stmt){
         Connection c =  null;
         PreparedStatement pstmt = null;
 
@@ -21,7 +22,7 @@ public class UserDao {
             c = connectionMaker.makeConnection();
 
             // Query문 작성
-            pstmt = new DeleteAllStrategy().makePreparedStatement(c);
+            pstmt = stmt.makePreparedStatement(c);
 
             // Query문 실행
             pstmt.executeUpdate();
@@ -45,9 +46,11 @@ public class UserDao {
                 }
             }
         }
-
-
     }
+    public void deleteAll(){
+        jdbcContextWithStatementStrategy(new DeleteAllStrategy());
+    }
+
     public int getCount(){
         Connection c = null;
         PreparedStatement pstmt = null;
@@ -99,10 +102,7 @@ public class UserDao {
             Connection c = connectionMaker.makeConnection();
 
             // Query문 작성
-            PreparedStatement pstmt = c.prepareStatement("INSERT INTO users(id, name, password) VALUES(?,?,?);");
-            pstmt.setString(1, user.getId());
-            pstmt.setString(2, user.getName());
-            pstmt.setString(3, user.getPassword());
+            PreparedStatement pstmt = new AddStrategy(user).makePreparedStatement(c);
 
             // Query문 실행
             pstmt.executeUpdate();
