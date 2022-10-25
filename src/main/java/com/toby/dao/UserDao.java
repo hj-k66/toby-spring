@@ -14,45 +14,83 @@ public class UserDao {
         this.connectionMaker = connectionMaker;
     }
     public void deleteAll(){
-        try {
+        Connection c =  null;
+        PreparedStatement pstmt = null;
 
-            Connection c = connectionMaker.makeConnection();
+        try {
+            c = connectionMaker.makeConnection();
 
             // Query문 작성
-            PreparedStatement pstmt = c.prepareStatement("DELETE FROM users;");
+            pstmt = c.prepareStatement("DELETE FROM users;");
 
             // Query문 실행
             pstmt.executeUpdate();
 
-            pstmt.close();
-            c.close();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            if(pstmt != null){
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if(c != null){
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
+
+
     }
     public int getCount(){
-        try {
+        Connection c = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
 
-            Connection c = connectionMaker.makeConnection();
+        try {
+            c = connectionMaker.makeConnection();
 
             // Query문 작성
-            PreparedStatement pstmt = c.prepareStatement("SELECT count(*) FROM users;");
+            pstmt = c.prepareStatement("SELECT count(*) FROM users;");
 
             // Query문 실행
-            ResultSet rs = pstmt.executeQuery();
+            rs = pstmt.executeQuery();
             rs.next();
-            int count = rs.getInt(1);
-
-            rs.close();
-            pstmt.close();
-            c.close();
-
-            return count;
+            return rs.getInt(1);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            if(rs != null){
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if(pstmt != null){
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if(c != null){
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
+
+
     }
 
     public void add(User user) {
