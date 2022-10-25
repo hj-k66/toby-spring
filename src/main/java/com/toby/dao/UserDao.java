@@ -3,12 +3,13 @@ package com.toby.dao;
 import com.toby.domain.User;
 
 import java.sql.*;
-import java.util.Map;
 
 public class UserDao {
-    private ConnectionMaker connectionMaker = new ConnectionMaker();
-
-    public UserDao() {
+    private ConnectionMaker connectionMaker;
+    public UserDao(){
+        this.connectionMaker = new AwsConnectionMaker();
+    }
+    public UserDao(ConnectionMaker connectionMaker) {
         this.connectionMaker = connectionMaker;
     }
 

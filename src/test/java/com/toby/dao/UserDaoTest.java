@@ -9,8 +9,8 @@ class UserDaoTest {
     @Test
     void addAndGet(){
         //Given
-        User user = new User("1","김희정","1234");
-        UserDao userDao = new UserDao();
+        User user = new User("2","김희정","1234");
+        UserDao userDao = new UserDao(new AwsConnectionMaker());
         //When
         userDao.add(user);
         User selectedUser = userDao.findById(user.getId());
