@@ -1,6 +1,7 @@
 package com.toby.dao;
 
 import com.toby.domain.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,18 @@ import static org.assertj.core.api.Assertions.*;
 class UserDaoTest {
     @Autowired
     ApplicationContext context;
+    UserDao userDao;
+    @BeforeEach
+    void setUp(){
+        userDao = context.getBean("awsUserDao",UserDao.class);
+        userDao.deleteAll();
+    }
+
 
     @Test
     void addAndGet(){
         //Given
         User user = new User("3","김희정","1234");
-        UserDao userDao = context.getBean("awsUserDao",UserDao.class);
         //When
         userDao.add(user);
         User selectedUser = userDao.findById(user.getId());
