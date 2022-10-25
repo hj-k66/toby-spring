@@ -18,10 +18,7 @@ public class UserDao {
 
 
     public void deleteAll(){
-        this.jdbcContext.workJdbcContextWithStatementStrategy(connection -> {
-            PreparedStatement pstmt = connection.prepareStatement("DELETE FROM users;");
-            return pstmt;
-        });
+        this.jdbcContext.executeSql("DELETE FROM users");
     }
 
     public int getCount(){

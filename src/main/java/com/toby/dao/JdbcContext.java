@@ -11,6 +11,9 @@ public class JdbcContext {
     public JdbcContext(DataSource dataSource) {
         this.dataSource = dataSource;
     }
+    public void executeSql(String sql){
+        this.workJdbcContextWithStatementStrategy(connection -> connection.prepareStatement(sql));
+    }
 
     public void workJdbcContextWithStatementStrategy(StatementStrategy stmt){
         Connection c =  null;
