@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.List;
 
 public class UserDao {
     private final JdbcTemplate jdbcTemplate;
@@ -37,6 +38,10 @@ public class UserDao {
     };
     public User findById(String id) {
         return this.jdbcTemplate.queryForObject("SELECT * from users WHERE id = ?", rowMapper,id);
+    }
+
+    public List<User> findAll(){
+        return this.jdbcTemplate.query("SELECT * from users", rowMapper);
     }
 
 

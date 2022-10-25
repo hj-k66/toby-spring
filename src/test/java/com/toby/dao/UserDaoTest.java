@@ -13,6 +13,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.swing.*;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = UserDaoFactory.class)
@@ -74,6 +76,23 @@ class UserDaoTest {
         Assertions.assertThrows(EmptyResultDataAccessException.class,()->{
             userDao.findById("100");
         });
+    }
+
+    @Test
+    void findAll(){
+        //Given
+        User user1 = new User("1","김희정","1234");
+        User user2 = new User("2","희정김","4321");
+        User user3 = new User("3","정희김","asdf");
+
+        //When
+        userDao.add(user1);
+        userDao.add(user2);
+        userDao.add(user3);
+        List<User> userList = userDao.findAll();
+
+        //Then
+        assertThat(userList.size()).isEqualTo(3);
     }
 
 }
