@@ -21,7 +21,7 @@ public class UserDao {
             c = connectionMaker.makeConnection();
 
             // Query문 작성
-            pstmt = c.prepareStatement("DELETE FROM users;");
+            pstmt = new DeleteAllStrategy().makePreparedStatement(c);
 
             // Query문 실행
             pstmt.executeUpdate();
