@@ -97,22 +97,7 @@ public class UserDao {
     }
 
     public void add(User user) {
-        try {
-            // DB접속 (ex sql workbeanch실행)
-            Connection c = connectionMaker.makeConnection();
-
-            // Query문 작성
-            PreparedStatement pstmt = new AddStrategy(user).makePreparedStatement(c);
-
-            // Query문 실행
-            pstmt.executeUpdate();
-
-            pstmt.close();
-            c.close();
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        jdbcContextWithStatementStrategy(new AddStrategy(user));
     }
 
     public User findById(String id) {
