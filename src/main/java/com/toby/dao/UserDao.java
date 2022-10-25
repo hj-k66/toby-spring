@@ -6,12 +6,16 @@ import java.sql.*;
 import java.util.Map;
 
 public class UserDao {
+    private ConnectionMaker connectionMaker = new ConnectionMaker();
+
+    public UserDao() {
+        this.connectionMaker = connectionMaker;
+    }
+
     public void add(User user) {
-        Map<String, String> env = System.getenv();
         try {
             // DB접속 (ex sql workbeanch실행)
-            Connection c = DriverManager.getConnection(env.get("DB_HOST"),
-                    env.get("DB_USER"), env.get("DB_PASSWORD"));
+            Connection c = connectionMaker.makeConnection();
 
             // Query문 작성
             PreparedStatement pstmt = c.prepareStatement("INSERT INTO users(id, name, password) VALUES(?,?,?);");
@@ -31,12 +35,10 @@ public class UserDao {
     }
 
     public User findById(String id) {
-        Map<String, String> env = System.getenv();
-        Connection c;
+
         try {
-            // DB접속 (ex sql workbeanch실행)
-            c = DriverManager.getConnection(env.get("DB_HOST"),
-                    env.get("DB_USER"), env.get("DB_PASSWORD"));
+            Connection c = connectionMaker.makeConnection();
+
 
             // Query문 작성
             PreparedStatement pstmt = c.prepareStatement("SELECT * FROM users WHERE id = ?");
