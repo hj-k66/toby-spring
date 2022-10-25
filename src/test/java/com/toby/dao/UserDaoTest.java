@@ -10,7 +10,7 @@ class UserDaoTest {
     void addAndGet(){
         //Given
         User user = new User("2","김희정","1234");
-        UserDao userDao = new UserDao(new AwsConnectionMaker());
+        UserDao userDao = new UserDaoFactory().awsUserDao();
         //When
         userDao.add(user);
         User selectedUser = userDao.findById(user.getId());
