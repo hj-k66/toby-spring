@@ -8,49 +8,20 @@ import java.sql.*;
 
 public class UserDao {
     private final DataSource dataSource;
-
+    private final JdbcContext jdbcContext;
+    //생성자에서 초기화
     public UserDao(DataSource dataSource) {
         this.dataSource = dataSource;
+        this.jdbcContext = new JdbcContext(dataSource);
+
     }
 
-    public void jdbcContextWithStatementStrategy(StatementStrategy stmt){
-        Connection c =  null;
-        PreparedStatement pstmt = null;
 
-        try {
-            c = dataSource.getConnection();
-
-            // Query문 작성
-            pstmt = stmt.makePreparedStatement(c);
-
-            // Query문 실행
-            pstmt.executeUpdate();
-
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if(pstmt != null){
-                try {
-                    pstmt.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            if(c != null){
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-    }
     public void deleteAll(){
-        jdbcContextWithStatementStrategy(connection -> {
+        this.jdbcContext.workJdbcContextWithStatementStrategy(connection -> {
             PreparedStatement pstmt = connection.prepareStatement("DELETE FROM users;");
             return pstmt;
-        };
+        });
     }
 
     public int getCount(){
@@ -99,7 +70,7 @@ public class UserDao {
     }
 
     public void add(User user) {
-        jdbcContextWithStatementStrategy(connection -> {
+        this.jdbcContext.workJdbcContextWithStatementStrategy(connection -> {
             PreparedStatement pstmt = connection.prepareStatement("INSERT INTO users(id, name, password) VALUES(?,?,?);");
             pstmt.setString(1, user.getId());
             pstmt.setString(2, user.getName());
